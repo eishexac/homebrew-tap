@@ -13,8 +13,8 @@ class Mousekeys < Formula
   license "MIT"
   head "https://github.com/eishexac/mousekeys.git", branch: "dev"
 
-  depends_on :macos
   depends_on xcode: :build
+  depends_on :macos
 
   # Bottles are added at the first release. Build one with:
   #   MOUSEKEYS_CODESIGN_ID="Developer ID Application: <name> (KQ342N2Y27)" \
@@ -35,7 +35,7 @@ class Mousekeys < Formula
     # leaves this unset and the binary stays ad-hoc (still runs; re-prompts
     # for Accessibility on each new version).
     id = ENV["MOUSEKEYS_CODESIGN_ID"]
-    if id && !id.empty?
+    if id.present?
       system "codesign", "--force", "--options", "runtime", "--timestamp",
              "--sign", id, bin/"mousekeysd"
     end
