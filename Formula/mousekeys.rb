@@ -9,7 +9,7 @@ class Mousekeys < Formula
   desc "Keyboard-driven mouse control (QMK-style layers), as a native daemon"
   homepage "https://github.com/eishexac/mousekeys"
   url "https://github.com/eishexac/mousekeys/archive/refs/tags/v0.1.0.tar.gz"
-  sha256 "0000000000000000000000000000000000000000000000000000000000000000" # TODO: fill at release
+  sha256 "a409280ee384b20e8eaa0d8e7e3844b8bc99150844b78e420b94eb4e722e8109"
   license "MIT"
   head "https://github.com/eishexac/mousekeys.git", branch: "dev"
 
