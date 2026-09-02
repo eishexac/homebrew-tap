@@ -41,29 +41,21 @@ class Mousekeys < Formula
     end
   end
 
-  # Homebrew generates and loads the LaunchAgent from this block. Started
-  # without sudo it installs to ~/Library/LaunchAgents and runs in the user's
-  # GUI session, which the event tap and menu-bar icon require. No -c: the
-  # daemon reads ~/.config/mousekeys/ (config + config.d/*.conf) itself,
-  # honoring $XDG_CONFIG_HOME.
-  service do
-    run [opt_bin/"mousekeysd"]
-    keep_alive true
-    run_type :immediate
-    process_type :interactive
-    log_path var/"log/mousekeys.log"
-    error_log_path var/"log/mousekeys.log"
-  end
+  # No `service` block: the daemon registers its own login agent. A plain
+  # `mousekeysd` run installs the agent, starts it under launchd (the correct
+  # Accessibility context), and exits — the menu-bar "Start at Login" toggle
+  # manages it thereafter.
 
   def caveats
     <<~EOS
-      Start it (registers the login agent and runs it now):
-        brew services start mousekeys
+      Set it up (registers a login agent, starts it, and exits):
+        mousekeysd
 
       First launch asks for Accessibility permission — a macOS requirement no
-      installer can skip. Approve it once at:
+      installer can grant. Approve it once at:
         System Settings > Privacy & Security > Accessibility
-      The daemon waits for the toggle and then starts automatically.
+      The daemon waits for the toggle, then runs — now and at every login.
+      Manage that from the menu-bar icon (Start at Login).
 
       Config is created on first run and hot-reloads on save (no restart):
         ~/.config/mousekeys/config
