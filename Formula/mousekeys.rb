@@ -29,16 +29,12 @@ class Mousekeys < Formula
     # Reference copy only; the daemon seeds ~/.config/mousekeys/config itself
     # on first run, so the formula never writes to the user's home.
     pkgshare.install "packaging/mousekeys.conf.example"
-
-    # Developer ID signing for distributable bottles: a stable identity lets
-    # the macOS Accessibility grant survive upgrades. A from-source install
-    # leaves this unset and the binary stays ad-hoc (still runs; re-prompts
-    # for Accessibility on each new version).
-    id = ENV["MOUSEKEYS_CODESIGN_ID"]
-    if id.present?
-      system "codesign", "--force", "--options", "runtime", "--timestamp",
-             "--sign", id, bin/"mousekeysd"
-    end
+    # Signing is NOT done here: Homebrew's build sandbox scrubs the
+    # environment, so a Developer ID identity can't be passed in. Release
+    # bottles are Developer ID-signed by CI (the release workflow signs the
+    # installed keg before `brew bottle`). A from-source install is therefore
+    # ad-hoc-signed — it runs, but re-prompts for Accessibility on upgrades;
+    # install the bottle for the persistent grant.
   end
 
   # No `service` block: the daemon registers its own login agent. A plain
