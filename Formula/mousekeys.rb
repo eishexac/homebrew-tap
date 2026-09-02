@@ -16,12 +16,13 @@ class Mousekeys < Formula
   depends_on xcode: :build
   depends_on :macos
 
-  # Bottles are added at the first release. Build one with:
-  #   MOUSEKEYS_CODESIGN_ID="Developer ID Application: <name> (KQ342N2Y27)" \
-  #     brew install --build-bottle mousekeys && brew bottle --json mousekeys
-  # then paste the generated `bottle do` block here. It must carry
-  # `cellar :any_skip_relocation`, or Homebrew relocates and invalidates the
-  # Developer ID signature. See the mousekeys repo's packaging/RELEASING.md.
+  # Developer ID-signed bottles, built and updated by the release workflow.
+  # cellar :any_skip_relocation keeps the pour from re-writing (and
+  # invalidating) the signature. Add more lines as other OS/arch are built.
+  bottle do
+    root_url "https://github.com/eishexac/mousekeys/releases/download/v0.1.0"
+    sha256 cellar: :any_skip_relocation, arm64_sequoia: "c449ab24462a0ba2b08c8415e6829b20efcdf2ebbb5a48c74c47ba737acb17a0"
+  end
 
   def install
     system "make", "build"
