@@ -10,11 +10,11 @@ cask "mousekeys" do
   version "0.1.0"
 
   on_arm do
-    sha256 "aaa2f871a658696742ef87aa8443738c24452ccc14537d3709e48b8810c57676"
+    sha256 "f8be018afdf70c1557977318671c4ba3717a526852c0426b792126d538c0a159"
     url "https://github.com/eishexac/mousekeys/releases/download/v#{version}/mousekeys_#{version}_arm64.dmg"
   end
   on_intel do
-    sha256 "85f9978010f4f12068945580d4003e6fcdbd7b76bea8cf57a360618c4279ee9d"
+    sha256 "9e92a67008280c0cfece3d2ee6025e2c3bd690ab079944a6ad048470af144340"
     url "https://github.com/eishexac/mousekeys/releases/download/v#{version}/mousekeys_#{version}_x86_64.dmg"
   end
 
