@@ -1,5 +1,6 @@
-# mousekeys — a Developer ID-signed .app shipped as a Cask. Built and kept up to
-# date by the mousekeys release workflow, which fills in the version and sha256.
+# mousekeys — a Developer ID-signed .app shipped as a Cask, per-arch (arm64 and
+# x86_64 DMGs). Built and kept up to date by the mousekeys release workflow,
+# which fills in the version and both per-arch sha256s.
 #
 # The .app is the product: it carries the daemon at Contents/MacOS/mousekeys and,
 # as a registered bundle, macOS lists it in Accessibility and Login Items on its
@@ -7,9 +8,16 @@
 # the Accessibility grant survives upgrades.
 cask "mousekeys" do
   version "0.1.0"
-  sha256 "b253bcccb8d1f86981c3ef3221e508522e02b7b8a3f1e7a1e5677de87fe53e42"
 
-  url "https://github.com/eishexac/mousekeys/releases/download/v#{version}/mousekeys-#{version}.zip"
+  on_arm do
+    sha256 "aaa2f871a658696742ef87aa8443738c24452ccc14537d3709e48b8810c57676"
+    url "https://github.com/eishexac/mousekeys/releases/download/v#{version}/mousekeys_#{version}_arm64.dmg"
+  end
+  on_intel do
+    sha256 "85f9978010f4f12068945580d4003e6fcdbd7b76bea8cf57a360618c4279ee9d"
+    url "https://github.com/eishexac/mousekeys/releases/download/v#{version}/mousekeys_#{version}_x86_64.dmg"
+  end
+
   name "mousekeys"
   desc "Keyboard-driven mouse control (QMK-style layers)"
   homepage "https://github.com/eishexac/mousekeys"
@@ -18,9 +26,15 @@ cask "mousekeys" do
 
   app "mousekeys.app"
 
+  # Launch it right after install so it prompts for Accessibility immediately.
+  # The app is notarized, so Gatekeeper doesn't block the auto-open.
+  postflight do
+    system_command "/usr/bin/open", args: ["#{appdir}/mousekeys.app"]
+  end
+
   caveats <<~EOS
-    First launch asks for Accessibility permission — a macOS requirement no
-    installer can grant. Approve mousekeys at:
+    mousekeys opens automatically after install and asks for Accessibility
+    permission — a macOS requirement no installer can grant. Approve mousekeys at:
       System Settings > Privacy & Security > Accessibility
 
     Then tap Caps Lock to enter mouse mode. Manage it from the menu-bar icon
