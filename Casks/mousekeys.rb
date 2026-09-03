@@ -7,14 +7,14 @@
 # own. It is Developer ID-signed (and notarized when notary secrets are set), so
 # the Accessibility grant survives upgrades.
 cask "mousekeys" do
-  version "0.1.1"
+  version "0.1.2"
 
   on_arm do
-    sha256 "2f0dff5db02e91e451e5084dd033ca663d3adc7b7a05fb4692254381726fb1ea"
+    sha256 "a8c1a7c4cb6e31fa8792650830be93a202d95dff6507aa258bc87f0a8324ac5c"
     url "https://github.com/eishexac/mousekeys/releases/download/v#{version}/mousekeys_#{version}_arm64.dmg"
   end
   on_intel do
-    sha256 "bb56780d6115937efbd83f60f8ff79bc851261a6337c7f8a573afdc631546f17"
+    sha256 "d58b9dddf9c3a81ef67e1418e720d062df5b4a7cc5c900f1a6c4ad94f3bb77a9"
     url "https://github.com/eishexac/mousekeys/releases/download/v#{version}/mousekeys_#{version}_x86_64.dmg"
   end
 
@@ -25,6 +25,8 @@ cask "mousekeys" do
   depends_on macos: :ventura  # minimum; SMAppService login item needs macOS 13+
 
   app "mousekeys.app"
+  # Expose the daemon on the CLI, e.g. `mousekeysd --print-default-config`.
+  binary "#{appdir}/mousekeys.app/Contents/MacOS/mousekeys", target: "mousekeysd"
 
   # Launch it right after install so it prompts for Accessibility immediately.
   # The app is notarized, so Gatekeeper doesn't block the auto-open.
@@ -32,9 +34,14 @@ cask "mousekeys" do
     system_command "/usr/bin/open", args: ["#{appdir}/mousekeys.app"]
   end
 
-  # Quit the running menu-bar app before removing it. The app clears its Caps
-  # Lock remap on exit (an atexit safety net covers this quit path too).
-  uninstall quit: "space.existin.mousekeys"
+  # Deregister the login item (only the app itself can unregister its own
+  # SMAppService item), then quit it. The app also clears its Caps Lock remap on
+  # exit (an atexit safety net covers this quit path too).
+  uninstall early_script: {
+              executable: "#{appdir}/mousekeys.app/Contents/MacOS/mousekeys",
+              args:       ["--deregister-login"],
+            },
+            quit: "space.existin.mousekeys"
 
   # `brew uninstall --zap` removes the app's own preferences. Your config in
   # ~/.config/mousekeys is deliberately left alone — it is your overrides, kept
