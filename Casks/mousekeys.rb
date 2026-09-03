@@ -22,7 +22,7 @@ cask "mousekeys" do
   desc "Keyboard-driven mouse control (QMK-style layers)"
   homepage "https://github.com/eishexac/mousekeys"
 
-  depends_on macos: ">= :ventura"  # SMAppService login item needs macOS 13+
+  depends_on macos: :ventura  # minimum; SMAppService login item needs macOS 13+
 
   app "mousekeys.app"
 
