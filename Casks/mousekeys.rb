@@ -7,14 +7,14 @@
 # own. It is Developer ID-signed (and notarized when notary secrets are set), so
 # the Accessibility grant survives upgrades.
 cask "mousekeys" do
-  version "0.1.0"
+  version "0.1.1"
 
   on_arm do
-    sha256 "f8be018afdf70c1557977318671c4ba3717a526852c0426b792126d538c0a159"
+    sha256 "2f0dff5db02e91e451e5084dd033ca663d3adc7b7a05fb4692254381726fb1ea"
     url "https://github.com/eishexac/mousekeys/releases/download/v#{version}/mousekeys_#{version}_arm64.dmg"
   end
   on_intel do
-    sha256 "9e92a67008280c0cfece3d2ee6025e2c3bd690ab079944a6ad048470af144340"
+    sha256 "bb56780d6115937efbd83f60f8ff79bc851261a6337c7f8a573afdc631546f17"
     url "https://github.com/eishexac/mousekeys/releases/download/v#{version}/mousekeys_#{version}_x86_64.dmg"
   end
 
@@ -32,6 +32,17 @@ cask "mousekeys" do
     system_command "/usr/bin/open", args: ["#{appdir}/mousekeys.app"]
   end
 
+  # Quit the running menu-bar app before removing it. The app clears its Caps
+  # Lock remap on exit (an atexit safety net covers this quit path too).
+  uninstall quit: "space.existin.mousekeys"
+
+  # `brew uninstall --zap` removes the app's own preferences. Your config in
+  # ~/.config/mousekeys is deliberately left alone — it is your overrides, kept
+  # across reinstalls.
+  zap trash: [
+    "~/Library/Preferences/space.existin.mousekeys.plist",
+  ]
+
   caveats <<~EOS
     mousekeys opens automatically after install and asks for Accessibility
     permission — a macOS requirement no installer can grant. Approve mousekeys at:
@@ -40,8 +51,9 @@ cask "mousekeys" do
     Then tap Caps Lock to enter mouse mode. Manage it from the menu-bar icon
     (Start at Login, Edit Config, Reload Config, Quit).
 
-    Config is created on first run and hot-reloads on save (no restart):
-      ~/.config/mousekeys/config
-    Drop-ins in ~/.config/mousekeys/config.d/*.conf are merged in sorted order.
+    Config is your overrides only — anything unset uses the built-in default.
+    Edit ~/.config/mousekeys/config (hot-reloads on save); see every option and
+    its default with `mousekeysd --print-default-config`. Drop-ins in
+    ~/.config/mousekeys/config.d/*.conf merge on top. Kept across uninstalls.
   EOS
 end
