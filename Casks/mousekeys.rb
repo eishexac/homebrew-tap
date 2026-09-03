@@ -7,14 +7,14 @@
 # own. It is Developer ID-signed (and notarized when notary secrets are set), so
 # the Accessibility grant survives upgrades.
 cask "mousekeys" do
-  version "0.1.3"
+  version "0.1.4"
 
   on_arm do
-    sha256 "d890a11fcefad84ca3ac6f3b246160ed1dcb948dd7677a8581f340a7e95ad49f"
+    sha256 "015f7a5bfd1865fdb8d2f658fc9bdb758de220791136a3238cb67f1f6a7ce7fd"
     url "https://github.com/eishexac/mousekeys/releases/download/v#{version}/mousekeys_#{version}_arm64.dmg"
   end
   on_intel do
-    sha256 "67dc895211efb6a5cc1b0f0a5b2446db986d11ca0ec459c7adbfdc2c62803f9a"
+    sha256 "d74d4cf8a96e241432934ad67272c07e2f510f4536e0a7bf51147a23b5cdb279"
     url "https://github.com/eishexac/mousekeys/releases/download/v#{version}/mousekeys_#{version}_x86_64.dmg"
   end
 
